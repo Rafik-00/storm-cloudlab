@@ -1,0 +1,6 @@
+{"vehicle_id": "CAR958", "location": {"latitude": 35.61630051305599, "longitude": -97.05498917164667}, "direction": 317.0, "speed": 52.0, "timestamp": "2024-06-17T12:30:00Z"}
+{"vehicle_id": "CAR245", "location": {"latitude": 44.18385556372438, "longitude": -91.82183986084175}, "direction": 74.0, "speed": 34.0, "timestamp": "2024-06-17T12:30:00Z"}
+{"vehicle_id": "CAR541", "location": {"latitude": 36.2434638323618, "longitude": -97.83815060103812}, "direction": 253.0, "speed": 67.0, "timestamp": "2024-06-17T12:30:00Z"}
+{"vehicle_id": "CAR545", "location": {"latitude": 36.2434638323618, "longitude": -97.83815060103812}, "direction": 253.0, "speed": 67.0, "timestamp": "2024-06-17T12:30:00Z"}
+{"vehicle_id": "CAR880", "location": {"latitude": 49.07304553406103, "longitude": -97.80853767483515}, "direction": 249.0, "speed": 67.0, "timestamp": "2024-06-17T12:30:00Z"}
+{"vehicle_id": "CAR610", "location": {"latitude": 36.39175162013815, "longitude": -98.29900533056863}, "direction": 243.0, "speed": 75.0, "timestamp": "2024-06-17T12:30:00Z"}

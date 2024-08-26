@@ -1,0 +1,47 @@
+package pdsp.tpch;
+
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
+import java.util.Map;
+
+import org.apache.storm.task.OutputCollector;
+import org.apache.storm.task.TopologyContext;
+import org.apache.storm.topology.OutputFieldsDeclarer;
+import org.apache.storm.topology.base.BaseRichBolt;
+import org.apache.storm.tuple.Fields;
+import org.apache.storm.tuple.Tuple;
+import org.apache.storm.tuple.Values;
+
+
+public class TPCHEventParserBolt extends BaseRichBolt{
+    private OutputCollector collector;
+
+    @Override
+    public void prepare(Map map, TopologyContext topologyContext, OutputCollector outputCollector) {
+        this.collector = outputCollector;
+        System.out.println("Preparing ParserBolt");
+    }
+
+    @Override
+    public void execute(Tuple tuple) {
+        String line = tuple.getString(0);
+        String[] fields = line.split("\\s+");
+        long processingTimestamp = System.currentTimeMillis();
+
+        String orderKey  = fields[0];
+        String cname = fields[1];
+        String caddress = fields[2];
+        int orderPriority = Integer.parseInt(fields[3]);
+        double extendedPrice = Double.parseDouble(fields[4]);
+        double discount = Double.parseDouble(fields[5]);
+        TPCHEventModel event = new TPCHEventModel(orderKey, cname, caddress, orderPriority, extendedPrice, discount);
+        collector.emit(new Values(event, tuple.getValueByField("e2eTimestamp"), processingTimestamp));
+        collector.ack(tuple);
+    }
+
+    @Override
+    public void declareOutputFields(OutputFieldsDeclarer declarer) {
+        declarer.declare(new Fields("tpchEvent","e2eTimestamp","processingTimestamp"));
+    }
+    
+}
