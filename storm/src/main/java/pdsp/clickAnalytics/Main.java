@@ -19,7 +19,7 @@ public class Main {
         int slidingWindowSlide = Integer.parseInt(config.getTopologyProperty(topologyName, "slideSize"));
 
         // Create and start the topology
-        ClickAnalyticsTopology topology = new ClickAnalyticsTopology(topologyName, mode, filePath, kafkaTopic, slidingWindowSize, slidingWindowSlide);
+        ClickAnalyticsTopology topology = new ClickAnalyticsTopology(topologyName, mode, filePath, kafkaTopic, slidingWindowSize, slidingWindowSlide, config);
         topology.setDebug(true);
         topology.startTopology(durationSeconds);
     }

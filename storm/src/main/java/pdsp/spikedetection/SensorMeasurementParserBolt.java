@@ -12,6 +12,7 @@ import org.apache.storm.topology.base.BaseRichBolt;
 import org.apache.storm.tuple.Fields;
 import org.apache.storm.tuple.Tuple;
 import org.apache.storm.tuple.Values;
+import pdsp.utils.KafkaUtils;
 
 public class SensorMeasurementParserBolt extends BaseRichBolt {
    private OutputCollector collector;
@@ -29,7 +30,18 @@ public class SensorMeasurementParserBolt extends BaseRichBolt {
    @Override
    public void execute(Tuple tuple) {
        long processingTimestamp = System.currentTimeMillis();
-       String value = tuple.getString(0);
+       long e2eTimestamp;
+       String value;
+       try{
+              e2eTimestamp = tuple.getLongByField("e2eTimestamp");
+              value = tuple.getString(0);
+         } catch (Exception e){
+           String tupleStr = (String) tuple.getValue(4);
+           Object[] arr = KafkaUtils.parseValue(tupleStr);
+           value = (String) arr[0];
+           e2eTimestamp = arr[1] != null ? (long) arr[1] : processingTimestamp;
+       }
+
        String[] fields = value.split("\\s+");
        LocalDateTime date = null;
 
@@ -57,7 +69,7 @@ public class SensorMeasurementParserBolt extends BaseRichBolt {
            System.out.println("Emitting measurement: " + measurement.toString());
            int sensorId = measurement.getSensorId();
 
-           collector.emit(new Values(sensorId, measurement,tuple.getValueByField("e2eTimestamp"), processingTimestamp));
+           collector.emit(new Values(sensorId, measurement,e2eTimestamp, processingTimestamp));
            collector.ack(tuple);
        } catch (Exception e) {
            System.out.println("Error parsing record fields, input record: " + value);

@@ -5,10 +5,11 @@ import pdsp.common.AbstractTopology;
 import pdsp.common.LoggerBolt;
 
 import org.apache.storm.tuple.Fields;
+import pdsp.config.Config;
 
 public class AdAnalyticsTopology extends AbstractTopology {
-    public AdAnalyticsTopology(String topologyName, String mode, String filePath, String kafkaTopic) {
-        super(topologyName, mode, filePath, kafkaTopic);
+    public AdAnalyticsTopology(String topologyName, String mode, String filePath, String kafkaTopic, Config config) {
+        super(topologyName, mode, filePath, kafkaTopic, config);
     }
     @Override 
     protected void buildTopology() {

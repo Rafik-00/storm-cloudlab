@@ -19,7 +19,7 @@ public class Main {
             String kafkaTopic = config.getTopologyProperty(topologyName, "kafkaTopic");
 
             // Create and start the topology
-            SpikeDetectionTopology topology = new SpikeDetectionTopology(topologyName ,mode, filePath, kafkaTopic, threshold);
+            SpikeDetectionTopology topology = new SpikeDetectionTopology(topologyName ,mode, filePath, kafkaTopic, threshold, config);
             topology.setDebug(true);
             topology.startTopology(durationSeconds);
       }

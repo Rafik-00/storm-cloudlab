@@ -1,22 +1,18 @@
 package pdsp.machineOutlier;
 
-import org.apache.storm.Config;
-import org.apache.storm.LocalCluster;
-import org.apache.storm.topology.TopologyBuilder;
 import org.apache.storm.topology.base.BaseRichSpout;
 import org.apache.storm.topology.base.BaseWindowedBolt;
 import pdsp.common.AbstractTopology;
-import pdsp.common.CustomKafkaSpout;
-import pdsp.common.FileSpout;
 import pdsp.common.LoggerBolt;
+import pdsp.config.Config;
 
 public class MachineOutlierTopology extends AbstractTopology {
     int slidingWindowSize;
     int slidingWindowSlide;
     double threshold;
 
-    public MachineOutlierTopology(String topologyName, String mode, String filePath, String kafkaTopic, int slidingWindowSize, int slidingWindowSlide, double threshold) {
-        super(topologyName, mode, filePath, kafkaTopic);
+    public MachineOutlierTopology(String topologyName, String mode, String filePath, String kafkaTopic, int slidingWindowSize, int slidingWindowSlide, double threshold, Config config) {
+        super(topologyName, mode, filePath, kafkaTopic, config);
         this.slidingWindowSize = slidingWindowSize;
         this.slidingWindowSlide = slidingWindowSlide;
         this.threshold = threshold;

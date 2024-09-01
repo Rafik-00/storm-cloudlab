@@ -1,22 +1,18 @@
 package pdsp.clickAnalytics;
 
-import org.apache.storm.Config;
-import org.apache.storm.LocalCluster;
-import org.apache.storm.topology.TopologyBuilder;
 import org.apache.storm.topology.base.BaseRichSpout;
 import org.apache.storm.topology.base.BaseWindowedBolt;
 import org.apache.storm.tuple.Fields;
 import pdsp.common.AbstractTopology;
-import pdsp.common.CustomKafkaSpout;
-import pdsp.common.FileSpout;
 import pdsp.common.LoggerBolt;
+import pdsp.config.Config;
 
 public class ClickAnalyticsTopology extends AbstractTopology {
     int slidingWindowSize;
     int slidingWindowSlide;
 
-    public ClickAnalyticsTopology(String topologyName, String mode, String filepath, String kafkaTopic, int slidingWindowSize, int slidingWindowSlide) {
-        super(topologyName, mode, filepath, kafkaTopic);
+    public ClickAnalyticsTopology(String topologyName, String mode, String filepath, String kafkaTopic, int slidingWindowSize, int slidingWindowSlide, Config config) {
+        super(topologyName, mode, filepath, kafkaTopic, config);
         this.slidingWindowSize = slidingWindowSize;
         this.slidingWindowSlide = slidingWindowSlide;
     }

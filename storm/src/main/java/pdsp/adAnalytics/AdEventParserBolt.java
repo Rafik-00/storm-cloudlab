@@ -8,8 +8,7 @@ import org.apache.storm.topology.OutputFieldsDeclarer;
 import org.apache.storm.tuple.Fields;
 import org.apache.storm.tuple.Tuple;
 import org.apache.storm.tuple.Values;
-
-
+import pdsp.utils.KafkaUtils;
 
 
 public class AdEventParserBolt implements IRichBolt{
@@ -24,7 +23,18 @@ public class AdEventParserBolt implements IRichBolt{
     @Override
     public void execute(Tuple tuple) {
         long processingTimestamp = System.currentTimeMillis();
-        String line = tuple.getString(0);
+        long e2eTimestamp;
+        String line;
+        try {
+            e2eTimestamp = tuple.getLongByField("e2eTimestamp");
+            line = tuple.getString(0);
+        } catch (IllegalArgumentException e) {
+            String tupleStr = (String) tuple.getValue(4);
+            Object[] arr = KafkaUtils.parseValue(tupleStr);
+            line = (String) arr[0];
+            e2eTimestamp = arr[1] != null ? (long) arr[1] : processingTimestamp;
+        }
+
         String[] record = line.split("\\s+");;
         String type = record[0];
         int clicks = Integer.parseInt(record[1]);
@@ -41,7 +51,7 @@ public class AdEventParserBolt implements IRichBolt{
         String userId = record[12];
 
         AdEvent event = new AdEvent(type, clicks, views, displayUrl, adId, queryId, depth, position, advertiserId, keywordId, titleId, descriptionId, userId, 1);
-        collector.emit(new Values(type, adId, queryId, event, tuple.getValueByField("e2eTimestamp"), processingTimestamp));
+        collector.emit(new Values(type, adId, queryId, event, e2eTimestamp, processingTimestamp));
     }
     @Override
     public void declareOutputFields(OutputFieldsDeclarer outputFieldsDeclarer) {

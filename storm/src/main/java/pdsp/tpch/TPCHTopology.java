@@ -1,20 +1,16 @@
 package pdsp.tpch;
 
-import org.apache.storm.Config;
-import org.apache.storm.LocalCluster;
-import org.apache.storm.topology.TopologyBuilder;
 import org.apache.storm.topology.base.BaseRichSpout;
 import org.apache.storm.topology.base.BaseWindowedBolt;
 import org.apache.storm.tuple.Fields;
 
 import pdsp.common.AbstractTopology;
-import pdsp.common.FileSpout;
 import pdsp.common.LoggerBolt;
-import pdsp.config.RandomParallelismEnumerator;
+import pdsp.config.Config;
 
 public class TPCHTopology extends AbstractTopology {
-        public TPCHTopology(String topologyName, String mode, String filePath, String kafkaTopic) {
-            super(topologyName, mode, filePath, kafkaTopic);
+        public TPCHTopology(String topologyName, String mode, String filePath, String kafkaTopic, Config config) {
+            super(topologyName, mode, filePath, kafkaTopic, config);
         }
 
         @Override

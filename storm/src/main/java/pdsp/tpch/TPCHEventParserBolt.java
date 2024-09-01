@@ -11,6 +11,7 @@ import org.apache.storm.topology.base.BaseRichBolt;
 import org.apache.storm.tuple.Fields;
 import org.apache.storm.tuple.Tuple;
 import org.apache.storm.tuple.Values;
+import pdsp.utils.KafkaUtils;
 
 
 public class TPCHEventParserBolt extends BaseRichBolt{
@@ -24,9 +25,19 @@ public class TPCHEventParserBolt extends BaseRichBolt{
 
     @Override
     public void execute(Tuple tuple) {
-        String line = tuple.getString(0);
-        String[] fields = line.split("\\s+");
         long processingTimestamp = System.currentTimeMillis();
+        long e2eTimestamp;
+        String line;
+        try {
+            e2eTimestamp = tuple.getLongByField("e2eTimestamp");
+            line = tuple.getString(0);
+        } catch (Exception e) {
+            String tupleStr = (String) tuple.getValue(4);
+            Object[] arr = KafkaUtils.parseValue(tupleStr);
+            line = (String) arr[0];
+            e2eTimestamp = arr[1] != null ? (long) arr[1] : processingTimestamp;
+        }
+        String[] fields = line.split("\\s+");
 
         String orderKey  = fields[0];
         String cname = fields[1];
@@ -35,7 +46,7 @@ public class TPCHEventParserBolt extends BaseRichBolt{
         double extendedPrice = Double.parseDouble(fields[4]);
         double discount = Double.parseDouble(fields[5]);
         TPCHEventModel event = new TPCHEventModel(orderKey, cname, caddress, orderPriority, extendedPrice, discount);
-        collector.emit(new Values(event, tuple.getValueByField("e2eTimestamp"), processingTimestamp));
+        collector.emit(new Values(event, e2eTimestamp, processingTimestamp));
         collector.ack(tuple);
     }
 

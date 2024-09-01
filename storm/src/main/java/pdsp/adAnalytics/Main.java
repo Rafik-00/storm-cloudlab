@@ -18,7 +18,7 @@ public class Main {
         String kafkaTopic = config.getTopologyProperty(topologyName, "kafkaTopic");
 
         // Create and start the topology
-        AdAnalyticsTopology topology = new AdAnalyticsTopology(topologyName, mode, filePath, kafkaTopic);
+        AdAnalyticsTopology topology = new AdAnalyticsTopology(topologyName, mode, filePath, kafkaTopic, config);
         topology.setDebug(true);
         topology.startTopology(durationSeconds);
     }

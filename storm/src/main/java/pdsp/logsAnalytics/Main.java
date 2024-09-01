@@ -18,7 +18,7 @@ public static void main(String[] args) {
         String kafkaTopic = config.getTopologyProperty(topologyName, "kafkaTopic");
 
         // Create and start the topology
-        logsAnalyticsTopology topology = new logsAnalyticsTopology(topologyName, mode, filePath, kafkaTopic);
+        logsAnalyticsTopology topology = new logsAnalyticsTopology(topologyName, mode, filePath, kafkaTopic, config);
         topology.setDebug(true);
         topology.startTopology(durationSeconds);
     }

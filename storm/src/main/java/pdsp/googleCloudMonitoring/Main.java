@@ -17,7 +17,7 @@ public class Main {
         String kafkaTopic = config.getTopologyProperty(topologyName, "kafkaTopic");
 
         // Create and start the topology
-        GoogleCloudMonitoringTopology topology = new GoogleCloudMonitoringTopology(topologyName, mode, filePath, kafkaTopic);
+        GoogleCloudMonitoringTopology topology = new GoogleCloudMonitoringTopology(topologyName, mode, filePath, kafkaTopic, config);
         topology.setDebug(true);
         topology.startTopology(durationSeconds);
     }

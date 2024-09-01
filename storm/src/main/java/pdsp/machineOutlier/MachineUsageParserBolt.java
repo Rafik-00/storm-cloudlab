@@ -7,7 +7,9 @@ import org.apache.storm.topology.base.BaseRichBolt;
 import org.apache.storm.tuple.Fields;
 import org.apache.storm.tuple.Tuple;
 import org.apache.storm.tuple.Values;
+import pdsp.utils.KafkaUtils;
 
+import java.util.Arrays;
 import java.util.Map;
 
 public class MachineUsageParserBolt extends BaseRichBolt {
@@ -20,8 +22,16 @@ public class MachineUsageParserBolt extends BaseRichBolt {
     @Override
     public void execute(Tuple tuple) {
         long processingTimestamp = System.currentTimeMillis();
-
         String[] values = tuple.getString(0).split(",");
+        long e2eTimestamp;
+        try {
+            e2eTimestamp = tuple.getLongByField("e2eTimestamp");
+        } catch (Exception e) {
+            Object[] arr = KafkaUtils.parseValue((String) tuple.getValue(4));
+            e2eTimestamp = (long) arr[1];
+            values = ((String) arr[0]).split(",");
+        }
+
         MachineUsage machineUsage;
         if (values[4].isEmpty() && values[5].isEmpty())
             machineUsage = new MachineUsage(
@@ -45,7 +55,7 @@ public class MachineUsageParserBolt extends BaseRichBolt {
                     Double.parseDouble(values[6]),
                     Double.parseDouble(values[7]),
                     Double.parseDouble(values[8]));
-        outputCollector.emit(new Values(machineUsage, tuple.getValueByField("e2eTimestamp"), processingTimestamp));
+        outputCollector.emit(new Values(machineUsage, e2eTimestamp, processingTimestamp));
     }
 
     @Override

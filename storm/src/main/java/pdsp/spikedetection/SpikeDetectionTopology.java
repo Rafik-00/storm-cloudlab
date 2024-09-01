@@ -5,12 +5,13 @@ import org.apache.storm.tuple.Fields;
 
 import pdsp.common.AbstractTopology;
 import pdsp.common.LoggerBolt;
+import pdsp.config.Config;
 
 public class SpikeDetectionTopology extends AbstractTopology{
     private double threshold;
     
-   public SpikeDetectionTopology(String topologyName, String mode, String filePath, String kafkaTopic, double threshold){
-        super(topologyName, mode, filePath, kafkaTopic);
+   public SpikeDetectionTopology(String topologyName, String mode, String filePath, String kafkaTopic, double threshold, Config config){
+        super(topologyName, mode, filePath, kafkaTopic, config);
         this.threshold = threshold;
    }
 

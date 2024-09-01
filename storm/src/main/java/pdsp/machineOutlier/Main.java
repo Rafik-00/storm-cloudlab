@@ -20,7 +20,7 @@ public class Main {
         double threshold = Double.parseDouble(config.getTopologyProperty(topologyName, "threshold"));
 
         // Create and start the topology
-        MachineOutlierTopology topology = new MachineOutlierTopology(topologyName, mode, filePath, kafkaTopic, slidingWindowSize, slidingWindowSlide, threshold);
+        MachineOutlierTopology topology = new MachineOutlierTopology(topologyName, mode, filePath, kafkaTopic, slidingWindowSize, slidingWindowSlide, threshold, config);
         topology.setDebug(true);
         topology.startTopology(durationSeconds);
     }

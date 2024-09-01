@@ -6,6 +6,7 @@ import org.apache.storm.topology.OutputFieldsDeclarer;
 import org.apache.storm.topology.base.BaseRichBolt;
 import org.apache.storm.tuple.Fields;
 import org.apache.storm.tuple.Tuple;
+import org.apache.storm.tuple.Values;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -35,11 +36,12 @@ public class statusCounterBolt extends BaseRichBolt {
         for (Map.Entry<String, Integer> entry : statusCounts.entrySet()) {
             System.out.println(entry.getKey() + " : " + entry.getValue());
         }
+        collector.emit(new Values(statusCounts, tuple.getLongByField("e2eTimestamp"), tuple.getLongByField("processingTimestamp")));
 
     }
 
     @Override
     public void declareOutputFields(OutputFieldsDeclarer outputFieldsDeclarer) {
-        outputFieldsDeclarer.declare(new Fields("statusCounts"));
+        outputFieldsDeclarer.declare(new Fields("statusCounts", "e2eTimestamp", "processingTimestamp"));
     }
 }

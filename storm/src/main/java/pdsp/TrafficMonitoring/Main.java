@@ -17,7 +17,7 @@ public class Main {
         String kafkaTopic = config.getTopologyProperty(topologyName, "kafkaTopic");
 
         // Create and start the topology
-        TrafficMonitoringTopology topology = new TrafficMonitoringTopology(topologyName, mode, filePath, kafkaTopic);
+        TrafficMonitoringTopology topology = new TrafficMonitoringTopology(topologyName, mode, filePath, kafkaTopic, config);
         topology.setDebug(true);
         topology.startTopology(durationSeconds);
     }

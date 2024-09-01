@@ -18,7 +18,7 @@ public class Main {
         String kafkaTopic = config.getTopologyProperty(topologyName, "kafkaTopic");
 
         // Create and start the topology
-        WordCountTopology topology = new WordCountTopology(topologyName, mode, filePath, kafkaTopic);
+        WordCountTopology topology = new WordCountTopology(topologyName, mode, filePath, kafkaTopic, config);
         topology.setDebug(true);
         topology.startTopology(durationSeconds);
 

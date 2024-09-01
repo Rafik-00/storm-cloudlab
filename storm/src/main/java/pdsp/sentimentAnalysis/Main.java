@@ -17,7 +17,7 @@ public class Main {
         String kafkaTopic = config.getTopologyProperty(topologyName, "kafkaTopic");
 
         // Create and start the topology
-        SentimentAnalysisTopology topology = new SentimentAnalysisTopology(topologyName, mode, filePath, kafkaTopic);
+        SentimentAnalysisTopology topology = new SentimentAnalysisTopology(topologyName, mode, filePath, kafkaTopic, config);
         topology.setDebug(true);
         topology.startTopology(durationSeconds);
     }

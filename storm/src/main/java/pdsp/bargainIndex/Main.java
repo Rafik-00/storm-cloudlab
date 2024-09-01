@@ -19,7 +19,7 @@ public class Main {
         String kafkaTopic = config.getTopologyProperty(topologyName, "kafkaTopic");
 
         // Create and start the topology
-        BargainIndexTopology topology = new BargainIndexTopology(topologyName, mode, filePath, kafkaTopic, threshold);
+        BargainIndexTopology topology = new BargainIndexTopology(topologyName, mode, filePath, kafkaTopic, threshold, config);
         topology.setDebug(true);
         topology.startTopology(durationSeconds);
     }

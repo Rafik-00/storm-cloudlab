@@ -3,11 +3,12 @@ package pdsp.sentimentAnalysis;
 import org.apache.storm.topology.base.BaseRichSpout;
 import pdsp.common.AbstractTopology;
 import pdsp.common.LoggerBolt;
+import pdsp.config.Config;
 
 public class SentimentAnalysisTopology extends AbstractTopology {
 
-    public SentimentAnalysisTopology(String topologyName, String mode, String filePath, String kafkaTopic) {
-        super(topologyName, mode, filePath, kafkaTopic);
+    public SentimentAnalysisTopology(String topologyName, String mode, String filePath, String kafkaTopic, Config config) {
+        super(topologyName, mode, filePath, kafkaTopic, config);
     }
 
     @Override

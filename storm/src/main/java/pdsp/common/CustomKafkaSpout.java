@@ -5,6 +5,7 @@ import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.storm.kafka.spout.KafkaSpout;
 import org.apache.storm.kafka.spout.KafkaSpoutConfig;
 
+@Deprecated
 public class CustomKafkaSpout {
     private KafkaSpoutConfig<String, String> kafkaSpoutConfig;
     private KafkaSpout<String, String> kafkaSpout;

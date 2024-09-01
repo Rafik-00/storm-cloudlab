@@ -55,11 +55,12 @@ public class MapMatcherBolt extends BaseRichBolt {
     public void execute(Tuple tuple) {
         try {
             TrafficEvent event = (TrafficEvent) tuple.getValueByField("trafficEvent");
-            System.out.println("MapMatcherBolt received: " + event);
+//            System.out.println("MapMatcherBolt received: " + event);
             // getting the road the vehicle is in
             DecimalFormat df = new DecimalFormat("#.##");
             double latitude = Double.parseDouble(df.format(event.getLatitude()));
             double longitude = Double.parseDouble(df.format(event.getLongitude()));
+//            System.out.println("vehicle id: " + event.getVehicleId() + ", latitude: " + latitude + ", longitude: " + longitude);
             for(Map.Entry<Long,Double[][]> entry : roadMap.entrySet()){
                 Long roadId = entry.getKey();
                 Double[][] coordinates = entry.getValue();
@@ -68,10 +69,12 @@ public class MapMatcherBolt extends BaseRichBolt {
                     i++;
                     if(coord[0].equals(longitude) && coord[1].equals(latitude)) {
                         Road road = new Road(String.valueOf(roadId), coord[1], coord[0], 0, 0);
-                        System.out.println("Vehicle is in road: " + roadId);
-                        System.out.println("iteration: " + i);
-                        collector.emit(new Values(road, event));
+//                        System.out.println("Vehicle: "+ event.getVehicleId() + " is in road: " + road.getRoadId());
+//                        System.out.println("iteration: " + i);
+                        collector.emit(new Values(road, event, tuple.getLongByField("e2eTimestamp"), tuple.getLongByField("processingTimestamp")));
+                        continue;
                     }
+
                 }
             }
             /*

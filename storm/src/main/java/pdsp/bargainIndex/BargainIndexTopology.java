@@ -5,14 +5,14 @@ import org.apache.storm.topology.base.BaseWindowedBolt;
 import org.apache.storm.tuple.Fields;
 import pdsp.common.AbstractTopology;
 import pdsp.common.LoggerBolt;
-import pdsp.config.RandomParallelismEnumerator;
+import pdsp.config.Config;
 
 public class BargainIndexTopology extends AbstractTopology {
 
     private double threshold;
 
-    public BargainIndexTopology(String topologyName, String mode, String filePath, String kafkaTopic, double threshold) {
-        super(topologyName ,mode, filePath, kafkaTopic);
+    public BargainIndexTopology(String topologyName, String mode, String filePath, String kafkaTopic, double threshold, Config config) {
+        super(topologyName ,mode, filePath, kafkaTopic, config);
         this.threshold = threshold;
     }
 

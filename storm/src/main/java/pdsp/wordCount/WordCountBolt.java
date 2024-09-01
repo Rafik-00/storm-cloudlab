@@ -24,6 +24,10 @@ public class WordCountBolt extends BaseBasicBolt {
                 wordCounts.put(word, 1);
             }
         }
+        // emit the word and count
+        for (Map.Entry<String, Integer> entry : wordCounts.entrySet()) {
+            basicOutputCollector.emit(new Values(entry.getKey(), entry.getValue(), tuple.getLongByField("e2eTimestamp"), tuple.getLongByField("processingTimestamp")));
+        }
         // print the hashmap
         for (Map.Entry<String, Integer> entry : wordCounts.entrySet()) {
             System.out.println(entry.getKey() + " : " + entry.getValue());
@@ -32,6 +36,6 @@ public class WordCountBolt extends BaseBasicBolt {
 
     @Override
     public void declareOutputFields(OutputFieldsDeclarer outputFieldsDeclarer) {
-        outputFieldsDeclarer.declare(new Fields("word", "count"));
+        outputFieldsDeclarer.declare(new Fields("word", "count", "e2eTimestamp", "processingTimestamp"));
     }
 }

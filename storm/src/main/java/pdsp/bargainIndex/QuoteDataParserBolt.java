@@ -7,6 +7,7 @@ import org.apache.storm.topology.base.BaseRichBolt;
 import org.apache.storm.tuple.Fields;
 import org.apache.storm.tuple.Tuple;
 import org.apache.storm.tuple.Values;
+import pdsp.utils.KafkaUtils;
 
 import java.util.Map;
 
@@ -22,7 +23,17 @@ public class QuoteDataParserBolt extends BaseRichBolt {
     @Override
     public void execute(Tuple tuple) {
         long processingTimestamp = System.currentTimeMillis();
-        String line = tuple.getString(0);
+        long e2eTimestamp;
+        String line;
+        try {
+            e2eTimestamp = tuple.getLongByField("e2eTimestamp");
+            line = tuple.getString(0);
+        } catch (IllegalArgumentException e) {
+            String tupleStr = (String) tuple.getValue(4);
+            Object[] arr = KafkaUtils.parseValue(tupleStr);
+            line = (String) arr[0];
+            e2eTimestamp = arr[1] != null ? (long) arr[1] : processingTimestamp;
+        }
         String[] fields = line.split(",");
         System.out.println("parsing line: " + line);
         System.out.println("fields: " + fields[0] + " " + fields[1] + " " + fields[2] + " " + fields[3] + " " + fields[4] + " " + fields[5] + " " + fields[6] + " " + fields[7]);    
@@ -36,7 +47,7 @@ public class QuoteDataParserBolt extends BaseRichBolt {
         double adjClose = Double.parseDouble(fields[6]);
         long volume = Long.parseLong(fields[7]);
         QuoteDataModel quoteData = new QuoteDataModel(symbol, date, open, high, low, close, adjClose, volume);
-        collecter.emit(new Values(symbol,quoteData, tuple.getValueByField("e2eTimestamp"), processingTimestamp));
+        collecter.emit(new Values(symbol,quoteData, e2eTimestamp, processingTimestamp));
         collecter.ack(tuple);
     }
 
