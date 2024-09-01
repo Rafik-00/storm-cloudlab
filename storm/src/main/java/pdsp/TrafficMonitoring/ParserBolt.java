@@ -42,7 +42,7 @@ public class ParserBolt extends BaseRichBolt {
                 double direction   = Double.parseDouble(fields[6]);
                 // Create a TrafficEvent object
                 TrafficEvent event = new TrafficEvent(vehicleId, latitude, longitude, direction, speed, timestamp);
-                collector.emit(new Values(event), tuple.getLongByField("e2eTimestamp"), processingTimestamp);
+                collector.emit(new Values(event, tuple.getLongByField("e2eTimestamp"), processingTimestamp));
             }
 
             /* json parser
