@@ -28,6 +28,36 @@ curl -L https://dl.grafana.com/enterprise/release/grafana-enterprise-9.3.6.linux
 # Unzip grafana to playgrounds directory
 tar zxf /home/playground/zip/grafana.tar.gz -C /home/playground/
 
+# download zookeeper
+curl -L https://downloads.apache.org/zookeeper/zookeeper-3.8.4/apache-zookeeper-3.8.4-bin.tar.gz > /home/playground/zip/zookeeper.tgz
+
+# Unzip zookeeper to playgrounds directory
+tar zxf /home/playground/zip/zookeeper-3.8.4.tar.gz -C /home/playground/
+cd /home/playground/zookeeper-3.8.4
+mkdir data
+
+# create zoo.cfg file
+vi vi conf/zoo.cfg tickTime=2000 dataDir=/path/to/zookeeper/data clientPort=2181 initLimit=5 syncLimit=2
+
+# start zookeeper
+bin/zkServer.sh start
+
+#download Storm
+curl -L https://dlcdn.apache.org/storm/apache-storm-2.6.3/apache-storm-2.6.3.tar.gz > /home/playground/zip/storm.tgz
+
+# Unzip storm to playgrounds directory
+tar zxf /home/playground/zip/storm.tgz -C /home/playground/
+cd /home/playground/apache-storm-2.6.3
+mkdir data
+
+# create storm.yaml file
+vi conf/storm.yaml storm.zookeeper.servers: - "localhost" storm.local.dir: "/home/playground/" nimbus.host: "localhost" supervisor.slots.ports: - 6700 - 6701 - 6702 - 6703
+
+# start storm
+bin/storm nimbus 
+bin/storm supervisor 
+bin/storm ui
+
 
 # Download kafka
 curl -L https://downloads.apache.org/kafka/3.4.1/kafka_2.12-3.4.1.tgz > /home/playground/zip/kafka.tgz
