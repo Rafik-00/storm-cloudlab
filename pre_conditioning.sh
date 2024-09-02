@@ -21,6 +21,8 @@ sudo apt-get install python3-pip --yes
 sudo apt install unzip --yes
 # Install java
 sudo apt-get install openjdk-11-jdk --yes 
+# Install maven
+sudo apt-get install maven --yes
 # Install setuptools
 sudo pip3 install -U setuptools
 # Upgrade pip3
