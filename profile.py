@@ -65,7 +65,7 @@ for i in range(params.dspNodeCount):
     iface = node.addInterface("if1")
     lan.addInterface(iface)
     node.addService(pg.Execute(shell="sh", command="sudo sh /local/repository/pre_conditioning.sh"))
-    node.addService(pg.Execute(shell="sh", command="sudo sh /local/repository/download_datasets.sh"))
+    # node.addService(pg.Execute(shell="sh", command="sudo sh /local/repository/download_datasets.sh"))
     node.addService(pg.Execute(shell="sh", command="sudo sh /local/repository/install_all_tools.sh"))
     
     
