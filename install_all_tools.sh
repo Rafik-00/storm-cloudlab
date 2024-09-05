@@ -29,35 +29,60 @@ curl -L https://dl.grafana.com/enterprise/release/grafana-enterprise-9.3.6.linux
 tar zxf /home/playground/zip/grafana.tar.gz -C /home/playground/
 
 # download zookeeper
-curl -L https://downloads.apache.org/zookeeper/zookeeper-3.8.4/apache-zookeeper-3.8.4-bin.tar.gz > /home/playground/zip/zookeeper.tgz
+# set remote_prefix to the remote path of the playbook
+remote_prefix=/home/playground/zip
+curl -L https://archive.apache.org/dist/zookeeper/zookeeper-3.6.2/apache-zookeeper-3.6.2-bin.tar.gz > $remote_prefix/zookeeper.tgz
+sudo cp -Rp $remote_prefix/apache-zookeeper-3.6.2-bin/. $remote_prefix/zookeeper/
+sudo chown -R ryou $remote_prefix/zookeeper
+echo 'export PATH=$PATH:$remote_prefix/zookeeper/bin' >> ~/.bashrc
+source ~/.bashrc
+mkdir /tmp/zookeeper
+cp $remote_prefix/zookeeper/conf/zoo_sample.cfg $remote_prefix/zookeeper/conf/zoo.cfg
 
-# Unzip zookeeper to playgrounds directory
-tar zxf /home/playground/zip/zookeeper-3.8.4.tar.gz -C /home/playground/
-cd /home/playground/zookeeper-3.8.4
-mkdir data
+# Create a service file for Zookeeper
+# TODO: check group name
+echo "[Unit]
+Description=Start Zookeeper
 
-# create zoo.cfg file
-vi vi conf/zoo.cfg tickTime=2000 dataDir=/path/to/zookeeper/data clientPort=2181 initLimit=5 syncLimit=2
+[Service]
+Type=forking
+ExecStart=${remote_prefix}/zookeeper/bin/zkServer.sh start ${remote_prefix}/zookeeper/conf/zoo.cfg
+ExecStop=${remote_prefix}/zookeeper/bin/zkServer.sh stop ${remote_prefix}/zookeeper/conf/zoo.cfg
+ExecRestart=${remote_prefix}/zookeeper/bin/zkServer.sh restart ${remote_prefix}/zookeeper/conf/zoo.cfg
+User=ryou
+Group=MAKI
 
-# start zookeeper
-bin/zkServer.sh start
+[Install]
+WantedBy=multi-user.target" | sudo tee /etc/systemd/system/zookeeper.service
+#start zookeeper
+$remote_prefix/zookeeper/bin/zkServer.sh start $remote_prefix/zookeeper/conf/zoo.cfg
 
-#download Storm
-curl -L https://dlcdn.apache.org/storm/apache-storm-2.6.3/apache-storm-2.6.3.tar.gz > /home/playground/zip/storm.tgz
+# download Storm
+curl -L https://archive.apache.org/dist/storm/apache-storm-2.4.0/apache-storm-2.4.0.tar.gz > $remote_prefix
+tar zxf $remote_prefix/apache-storm-2.4.0.tar.gz -C $remote_prefix
+sudo cp -Rp $remote_prefix/apache-storm-2.4.0/. $remote_prefix/storm
+#remove the tar file
+rm $remote_prefix/apache-storm-2.4.0.tar.gz
+#remove old storm directory
+rm -r $remote_prefix/apache-storm-2.4.0
+# create tmp directory for storm
+mkdir /tmp/storm
+#Create entry for master in storm.yaml
+# #!/bin/bash
 
-# Unzip storm to playgrounds directory
-tar zxf /home/playground/zip/storm.tgz -C /home/playground/
-cd /home/playground/apache-storm-2.6.3
-mkdir data
+# # Variables
+# remote_prefix="/path/to/storm"  # replace with your actual path
+# item="master"  # replace with your actual item
+# is_openstack="true"  # replace with your actual condition
 
-# create storm.yaml file
-vi conf/storm.yaml storm.zookeeper.servers: - "localhost" storm.local.dir: "/home/playground/" nimbus.host: "localhost" supervisor.slots.ports: - 6700 - 6701 - 6702 - 6703
+# # Check if is_openstack is true
+# if [ "$is_openstack" = "true" ]; then
+#   # Append the line to the file
+#   echo -e "storm.zookeeper.servers: \n  - \"$item\"" >> "${remote_prefix}/storm/conf/storm.yaml"
+# fi
 
-# start storm
-bin/storm nimbus 
-bin/storm supervisor 
-bin/storm ui
-
+# add storm to path
+echo 'export PATH=$PATH:$remote_prefix/storm/bin' >> ~/.bashrc
 
 # Download kafka
 curl -L https://downloads.apache.org/kafka/3.8.0/kafka-3.8.0-src.tgz > /home/playground/zip/kafka.tgz
