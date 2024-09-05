@@ -31,13 +31,15 @@ tar zxf /home/playground/zip/grafana.tar.gz -C /home/playground/
 # download zookeeper
 # set remote_prefix to the remote path of the playbook
 remote_prefix=/home/playground/zip
-curl -L https://archive.apache.org/dist/zookeeper/zookeeper-3.6.2/apache-zookeeper-3.6.2-bin.tar.gz > $remote_prefix/zookeeper.tgz
+sudo curl -L https://archive.apache.org/dist/zookeeper/zookeeper-3.6.2/apache-zookeeper-3.6.2-bin.tar.gz > $remote_prefix/zookeeper.tgz
+sudo tar zxf $remote_prefix/zookeeper.tgz -C $remote_prefix
 sudo cp -Rp $remote_prefix/apache-zookeeper-3.6.2-bin/. $remote_prefix/zookeeper/
 sudo chown -R ryou $remote_prefix/zookeeper
-echo 'export PATH=$PATH:$remote_prefix/zookeeper/bin' >> ~/.bashrc
-source ~/.bashrc
-mkdir /tmp/zookeeper
-cp $remote_prefix/zookeeper/conf/zoo_sample.cfg $remote_prefix/zookeeper/conf/zoo.cfg
+sudo echo 'export PATH=$PATH:$remote_prefix/zookeeper/bin' >> ~/.bashrc
+sudo source ~/.bashrc
+sudo mkdir /tmp/zookeeper
+sudo cp $remote_prefix/zookeeper/conf/zoo_sample.cfg $remote_prefix/zookeeper/conf/zoo.cfg
+
 
 # Create a service file for Zookeeper
 # TODO: check group name
@@ -55,11 +57,11 @@ Group=MAKI
 [Install]
 WantedBy=multi-user.target" | sudo tee /etc/systemd/system/zookeeper.service
 #start zookeeper
-$remote_prefix/zookeeper/bin/zkServer.sh start $remote_prefix/zookeeper/conf/zoo.cfg
+sudo $remote_prefix/zookeeper/bin/zkServer.sh start $remote_prefix/zookeeper/conf/zoo.cfg
 
 # download Storm
 curl -L https://archive.apache.org/dist/storm/apache-storm-2.4.0/apache-storm-2.4.0.tar.gz > $remote_prefix
-tar zxf $remote_prefix/apache-storm-2.4.0.tar.gz -C $remote_prefix
+sudo tar zxf $remote_prefix/apache-storm-2.4.0.tar.gz -C $remote_prefix
 sudo cp -Rp $remote_prefix/apache-storm-2.4.0/. $remote_prefix/storm
 #remove the tar file
 rm $remote_prefix/apache-storm-2.4.0.tar.gz
