@@ -60,16 +60,16 @@ bin/storm ui
 
 
 # Download kafka
-curl -L https://downloads.apache.org/kafka/3.4.1/kafka_2.12-3.4.1.tgz > /home/playground/zip/kafka.tgz
+curl -L https://downloads.apache.org/kafka/3.8.0/kafka-3.8.0-src.tgz > /home/playground/zip/kafka.tgz
 
 # Unzip kafka to playgrounds directory
 tar zxf /home/playground/zip/kafka.tgz -C /home/playground/
 
-# removing default kafka property
-rm /home/playground/kafka_2.12-3.4.1/config/server.properties
+# # removing default kafka property
+# rm /home/playground/kafka-3.8.0-src/config/server.properties
 
-# Copying the server.properties to /home/playground
-cp /local/repository/server.properties /home/playground/kafka_2.12-3.4.1/config
+# # Copying the server.properties to /home/playground
+# cp /local/repository/server.properties /home/playground/kafka_2.12-3.4.1/config
 
 #rm -r /local/repository
 
