@@ -98,4 +98,4 @@ tar zxf /home/playground/zip/kafka.tgz -C /home/playground/
 
 #rm -r /local/repository
 
-sudo rm -r /home/playground/zip
+# sudo rm -r /home/playground/zip
