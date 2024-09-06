@@ -57,12 +57,14 @@ Group=MAKI
 [Install]
 WantedBy=multi-user.target" | sudo tee /etc/systemd/system/zookeeper.service
 #start zookeeper
+#TODO: this will make zookeeper start on boot on all nodes
 sudo $remote_prefix/zookeeper/bin/zkServer.sh start $remote_prefix/zookeeper/conf/zoo.cfg
 
 # download Storm
-curl -L https://archive.apache.org/dist/storm/apache-storm-2.4.0/apache-storm-2.4.0.tar.gz > $remote_prefix
-sudo tar zxf $remote_prefix/apache-storm-2.4.0.tar.gz -C $remote_prefix
+sudo curl -L https://archive.apache.org/dist/storm/apache-storm-2.4.0/apache-storm-2.4.0.tar.gz > $remote_prefix/storm.tgz
+sudo tar zxf $remote_prefix/storm.tgz -C $remote_prefix
 sudo cp -Rp $remote_prefix/apache-storm-2.4.0/. $remote_prefix/storm
+
 #remove the tar file
 rm $remote_prefix/apache-storm-2.4.0.tar.gz
 #remove old storm directory
@@ -71,7 +73,6 @@ rm -r $remote_prefix/apache-storm-2.4.0
 mkdir /tmp/storm
 #Create entry for master in storm.yaml
 # #!/bin/bash
-
 # # Variables
 # remote_prefix="/path/to/storm"  # replace with your actual path
 # item="master"  # replace with your actual item
@@ -85,6 +86,7 @@ mkdir /tmp/storm
 
 # add storm to path
 echo 'export PATH=$PATH:$remote_prefix/storm/bin' >> ~/.bashrc
+source ~/.bashrc
 
 # Download kafka
 curl -L https://downloads.apache.org/kafka/3.8.0/kafka-3.8.0-src.tgz > /home/playground/zip/kafka.tgz
