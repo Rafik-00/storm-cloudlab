@@ -58,7 +58,7 @@ Group=MAKI
 WantedBy=multi-user.target" | sudo tee /etc/systemd/system/zookeeper.service
 #start zookeeper
 #TODO: this will make zookeeper start on boot on all nodes
-sudo $remote_prefix/zookeeper/bin/zkServer.sh start $remote_prefix/zookeeper/conf/zoo.cfg
+# sudo $remote_prefix/zookeeper/bin/zkServer.sh start $remote_prefix/zookeeper/conf/zoo.cfg
 
 # download Storm
 sudo curl -L https://archive.apache.org/dist/storm/apache-storm-2.4.0/apache-storm-2.4.0.tar.gz > $remote_prefix/storm.tgz
