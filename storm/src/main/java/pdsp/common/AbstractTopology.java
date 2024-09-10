@@ -2,6 +2,7 @@ package pdsp.common;
 
 import org.apache.storm.Config;
 import org.apache.storm.LocalCluster;
+import org.apache.storm.StormSubmitter;
 import org.apache.storm.topology.TopologyBuilder;
 import org.apache.storm.topology.base.BaseRichSpout;
 import org.slf4j.Logger;
@@ -18,6 +19,7 @@ public abstract class AbstractTopology {
     protected TopologyBuilder builder;
     protected Config config;
     protected LocalCluster cluster;
+    protected StormSubmitter submitter;
     protected String mode;
     protected String filePath;
     protected String kafkaTopic;
@@ -38,6 +40,7 @@ public abstract class AbstractTopology {
         this.builder = new TopologyBuilder();
         this.config = new Config();
         this.cluster = new LocalCluster();
+        this.submitter = new StormSubmitter();
     }
 
     // Added constructor to pass config
@@ -84,6 +87,26 @@ public abstract class AbstractTopology {
             LOG.info("Topology {} started", topologyName);
 
             Thread.sleep(durationSeconds * 1000);
+
+            runner.stop();
+            cluster.shutdown();
+            LOG.info("Topology {} stopped", topologyName);
+        } catch (Exception e) {
+            LOG.error("Error while running the topology", e);
+        }
+    }
+    public void submitTopology() {
+        try {
+            buildTopology();
+            config.put("topology.queryName", topologyName);
+            config.put("topology.parallelismHint", parallelism);
+            config.put(Config.NIMBUS_SEEDS, "localhost");
+
+            KafkaRunner runner = new KafkaRunner(config);
+            runner.start(topologyName, kafkaTopic, filePath);
+
+            submitter.submitTopology(topologyName, config, builder.createTopology());
+            LOG.info("Topology {} started", topologyName);
 
             runner.stop();
             cluster.shutdown();
