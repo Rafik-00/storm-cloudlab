@@ -34,8 +34,8 @@ WantedBy=multi-user.target" | sudo tee /etc/systemd/system/zookeeper.service
 # download Storm
 sudo curl -L https://dlcdn.apache.org/storm/apache-storm-1.2.4/apache-storm-1.2.4.tar.gz > $remote_prefix/storm.tgz
 sudo tar zxf $remote_prefix/storm.tgz -C $remote_prefix
-# sudo cp -Rp $remote_prefix/apache-storm-1.2.4/. /usr/local/storm
-sudo mv $remote_prefix/apache-storm-2.2.0 /usr/local/storm
+sudo cp -Rp $remote_prefix/apache-storm-1.2.4/. /usr/local/storm
+# sudo mv $remote_prefix/apache-storm-2.2.0 /usr/local/storm
 #remove the tar file
 rm $remote_prefix/apache-storm-1.2.4.tar.gz
 #remove old storm directory

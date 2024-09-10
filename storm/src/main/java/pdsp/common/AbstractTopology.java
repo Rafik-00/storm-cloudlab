@@ -3,8 +3,12 @@ package pdsp.common;
 import org.apache.storm.Config;
 import org.apache.storm.LocalCluster;
 import org.apache.storm.StormSubmitter;
+import org.apache.storm.generated.Nimbus;
+
+import java.util.Collections;
 import org.apache.storm.topology.TopologyBuilder;
 import org.apache.storm.topology.base.BaseRichSpout;
+import org.apache.storm.utils.NimbusClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pdsp.common.kafka.KafkaRunner;
@@ -39,7 +43,7 @@ public abstract class AbstractTopology {
         this.parallelism = parallelismEnumerator.getRandomParallelismHint();
         this.builder = new TopologyBuilder();
         this.config = new Config();
-        this.cluster = new LocalCluster();
+        //this.cluster = new LocalCluster();
         this.submitter = new StormSubmitter();
     }
 
@@ -53,8 +57,8 @@ public abstract class AbstractTopology {
         this.slidingInterval = 1; //TODO: set with Enumerator
         this.parallelism = parallelismEnumerator.getRandomParallelismHint();
         this.builder = new TopologyBuilder();
-        this.cluster = new LocalCluster();
-
+        //this.cluster = new LocalCluster();
+        this.submitter = new StormSubmitter();
         this.config = new Config();
         this.config.put("kafka.bootstrap.server", config.getProperty("kafka.bootstrap.server"));
         this.config.put("kafka.port", config.getProperty("kafka.port"));
@@ -95,8 +99,13 @@ public abstract class AbstractTopology {
             LOG.error("Error while running the topology", e);
         }
     }
-    public void submitTopology() {
+    public void submitTopology(int durationSeconds) {
         try {
+            Nimbus.Client client = (Nimbus.Client) NimbusClient.getConfiguredClient(config).getClient();
+            if (client.getClusterInfo().get_topologies_size() != 0) {
+                throw new RuntimeException("There are already queries running on the cluster. Aborting");
+            }
+
             buildTopology();
             config.put("topology.queryName", topologyName);
             config.put("topology.parallelismHint", parallelism);
@@ -107,12 +116,13 @@ public abstract class AbstractTopology {
 
             submitter.submitTopology(topologyName, config, builder.createTopology());
             LOG.info("Topology {} started", topologyName);
+            Thread.sleep(durationSeconds * 1000);
 
             runner.stop();
-            cluster.shutdown();
+            client.killTopology(topologyName);
             LOG.info("Topology {} stopped", topologyName);
         } catch (Exception e) {
-            LOG.error("Error while running the topology", e);
+            LOG.error("Error while submitting the topology", e);
         }
     }
 
