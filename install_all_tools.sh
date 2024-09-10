@@ -32,14 +32,14 @@ WantedBy=multi-user.target" | sudo tee /etc/systemd/system/zookeeper.service
 # bin/zkServer.sh start /conf/zoo.cfg
 
 # download Storm
-sudo curl -L https://archive.apache.org/dist/storm/apache-storm-2.4.0/apache-storm-2.4.0.tar.gz > $remote_prefix/storm.tgz
+sudo curl -L https://dlcdn.apache.org/storm/apache-storm-1.2.4/apache-storm-1.2.4.tar.gz > $remote_prefix/storm.tgz
 sudo tar zxf $remote_prefix/storm.tgz -C $remote_prefix
-sudo cp -Rp $remote_prefix/apache-storm-2.4.0/. $remote_prefix/storm
-
+# sudo cp -Rp $remote_prefix/apache-storm-1.2.4/. /usr/local/storm
+sudo mv $remote_prefix/apache-storm-2.2.0 /usr/local/storm
 #remove the tar file
-rm $remote_prefix/apache-storm-2.4.0.tar.gz
+rm $remote_prefix/apache-storm-1.2.4.tar.gz
 #remove old storm directory
-rm -r $remote_prefix/apache-storm-2.4.0
+rm -r $remote_prefix/apache-storm-1.2.4
 # create tmp directory for storm
 mkdir /tmp/storm
 #Create entry for master in storm.yaml
@@ -56,11 +56,13 @@ mkdir /tmp/storm
 # fi
 
 # add storm to path
-echo 'export PATH=$PATH:$remote_prefix/storm/bin' >> ~/.bashrc
+# echo 'export PATH=$PATH:$remote_prefix/storm/bin' >> ~/.bashrc
+# source ~/.bashrc
+echo 'export STORM_HOME=/usr/local/storm' >> ~/.bashrc
+echo 'export PATH=$PATH:$STORM_HOME/bin' >> ~/.bashrc
 source ~/.bashrc
-
 # Download kafka
-curl -L https://downloads.apache.org/kafka/3.8.0/kafka-3.8.0-src.tgz > /home/playground/zip/kafka.tgz
+curl -L https://downloads.apache.org/kafka/3.8.0/kafka_2.13-3.8.0.tgz > /home/playground/zip/kafka.tgz
 
 # Unzip kafka to playgrounds directory
 tar zxf /home/playground/zip/kafka.tgz -C /home/playground/

@@ -100,7 +100,7 @@ public abstract class AbstractTopology {
             buildTopology();
             config.put("topology.queryName", topologyName);
             config.put("topology.parallelismHint", parallelism);
-            config.put(Config.NIMBUS_SEEDS, "localhost");
+            config.put(Config.NIMBUS_SEEDS, Collections.singletonList("localhost"));
 
             KafkaRunner runner = new KafkaRunner(config);
             runner.start(topologyName, kafkaTopic, filePath);
