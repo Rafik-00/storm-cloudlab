@@ -119,53 +119,13 @@ public abstract class AbstractTopology {
             LOG.error("Error while running the topology", e);
         }
     }
-    public void submitTopology(int durationSeconds) {
-        try {
-            buildTopology();
-            config.put("topology.queryName", topologyName);
-            config.put("topology.parallelismHint", parallelism);
-            config.put(config.NIMBUS_SEEDS, Collections.singletonList("localhost"));
-            
-            NimbusClient nimbusClient = NimbusClient.getConfiguredClient(config);
-            Nimbus.Client client = nimbusClient.getClient();
 
-            KafkaRunner runner = new KafkaRunner(config);
-            runner.start(topologyName, kafkaTopic, filePath);
-
-            submitter.submitTopology(topologyName, config, builder.createTopology());
-            LOG.info("Topology {} started", topologyName);
-            Thread.sleep(durationSeconds * 1000);
-
-            runner.stop();
-            client.killTopology(topologyName);
-            LOG.info("Topology {} stopped", topologyName);
-        } catch (TTransportException e) {
-            LOG.error("Transport error while running the topology", e);
-        } catch (TException e) {
-            LOG.error("Thrift error while running the topology", e);
-        } catch (Exception e) {
-            LOG.error("Error while running the topology", e);
-        }
-    }
     public void executeSequentialOnRemoteCluster(int durationSeconds) throws Exception {
         buildTopology();
             config.put("topology.queryName", topologyName);
             config.put("topology.parallelismHint", parallelism);
         try {
-        // Create the client
-        Nimbus.Client client =
-                (Nimbus.Client) NimbusClient.getConfiguredClient(config).getClient();
 
-        // Log existing supervisors found in the cluster
-        for (Iterator<SupervisorSummary> it = client.getClusterInfo().get_supervisors_iterator(); it.hasNext(); ) {
-            LOG.info("Supervisor found: {}", it.next());
-        }
-        // add local host mapping to the config
-        //addLocalHostMappingToConfig(stormConfig, client);
-
-        if (client.getClusterInfo().get_topologies_size() != 0) {
-            throw new RuntimeException("There are already queries running on the cluster. Aborting");
-        }            
             KafkaRunner kafkaRunner = new KafkaRunner(config);
             kafkaRunner.start(topologyName, kafkaTopic, filePath);
         
@@ -173,9 +133,7 @@ public abstract class AbstractTopology {
             Thread.sleep(durationSeconds * 1000);
             kafkaRunner.stop();
             LOG.info("Killing query: {}", topologyName);
-            client.killTopology(topologyName);
-            Thread.sleep(durationSeconds * 1000);
-            LOG.info("Killing query: {}", topologyName);
+
     }
     catch (Exception e) {
         LOG.error("Error while running the topology", e);
