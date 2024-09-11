@@ -1,7 +1,6 @@
 # Install python 3.10, java 11 openjdk
 sudo mkdir /home/playground 
 sudo /usr/local/etc/emulab/mkextrafs.pl -f /home/playground
-sudo mkdir /home/playground/kafka-logs
 sudo mkdir /home/playground/zip
 sudo mkdir ~/.kaggle
 cp /local/repository/kaggle.json ~/.kaggle

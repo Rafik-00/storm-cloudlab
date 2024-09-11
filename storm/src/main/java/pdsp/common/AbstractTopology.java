@@ -3,9 +3,16 @@ package pdsp.common;
 import org.apache.storm.Config;
 import org.apache.storm.LocalCluster;
 import org.apache.storm.StormSubmitter;
+import org.apache.storm.generated.KillOptions;
 import org.apache.storm.generated.Nimbus;
+import org.apache.storm.generated.SupervisorSummary;
+import org.apache.storm.thrift.TException;
+import org.apache.storm.thrift.transport.TTransportException;
 
 import java.util.Collections;
+import java.util.Iterator;
+import java.util.ArrayList;
+
 import org.apache.storm.topology.TopologyBuilder;
 import org.apache.storm.topology.base.BaseRichSpout;
 import org.apache.storm.utils.NimbusClient;
@@ -62,6 +69,12 @@ public abstract class AbstractTopology {
         this.config = new Config();
         this.config.put("kafka.bootstrap.server", config.getProperty("kafka.bootstrap.server"));
         this.config.put("kafka.port", config.getProperty("kafka.port"));
+        this.config.put("storm.cluster.mode", config.getProperty("storm.cluster.mode"));
+        this.config.put("storm.local.dir", config.getProperty("storm.local.dir"));
+        this.config.put("nimbus.thrift.port", config.getProperty("nimbus.thrift.port"));
+        this.config.put("storm.zookeeper.port", config.getProperty("storm.zookeeper.port"));
+        this.config.put("storm.zookeeper.servers", Collections.singletonList(config.getProperty("storm.zookeeper.servers")));
+        this.config.put("nimbus.seeds", Collections.singletonList(config.getProperty("nimbus.seeds")));
     }
 
     protected abstract void buildTopology();
@@ -101,15 +114,13 @@ public abstract class AbstractTopology {
     }
     public void submitTopology(int durationSeconds) {
         try {
-            Nimbus.Client client = (Nimbus.Client) NimbusClient.getConfiguredClient(config).getClient();
-            if (client.getClusterInfo().get_topologies_size() != 0) {
-                throw new RuntimeException("There are already queries running on the cluster. Aborting");
-            }
-
             buildTopology();
             config.put("topology.queryName", topologyName);
             config.put("topology.parallelismHint", parallelism);
-            config.put(Config.NIMBUS_SEEDS, Collections.singletonList("localhost"));
+            config.put(config.NIMBUS_SEEDS, Collections.singletonList("localhost"));
+            
+            NimbusClient nimbusClient = NimbusClient.getConfiguredClient(config);
+            Nimbus.Client client = nimbusClient.getClient();
 
             KafkaRunner runner = new KafkaRunner(config);
             runner.start(topologyName, kafkaTopic, filePath);
@@ -121,9 +132,47 @@ public abstract class AbstractTopology {
             runner.stop();
             client.killTopology(topologyName);
             LOG.info("Topology {} stopped", topologyName);
+        } catch (TTransportException e) {
+            LOG.error("Transport error while running the topology", e);
+        } catch (TException e) {
+            LOG.error("Thrift error while running the topology", e);
         } catch (Exception e) {
-            LOG.error("Error while submitting the topology", e);
+            LOG.error("Error while running the topology", e);
         }
+    }
+    public void executeSequentialOnRemoteCluster(int durationSeconds) throws Exception {
+        buildTopology();
+            config.put("topology.queryName", topologyName);
+            config.put("topology.parallelismHint", parallelism);
+        try {
+        // Create the client
+        Nimbus.Client client =
+                (Nimbus.Client) NimbusClient.getConfiguredClient(config).getClient();
+
+        // Log existing supervisors found in the cluster
+        for (Iterator<SupervisorSummary> it = client.getClusterInfo().get_supervisors_iterator(); it.hasNext(); ) {
+            LOG.info("Supervisor found: {}", it.next());
+        }
+        // add local host mapping to the config
+        //addLocalHostMappingToConfig(stormConfig, client);
+
+        if (client.getClusterInfo().get_topologies_size() != 0) {
+            throw new RuntimeException("There are already queries running on the cluster. Aborting");
+        }            
+            KafkaRunner kafkaRunner = new KafkaRunner(config);
+            kafkaRunner.start(topologyName, kafkaTopic, filePath);
+        
+            StormSubmitter.submitTopology(topologyName, config, builder.createTopology());
+            Thread.sleep(durationSeconds * 1000);
+            kafkaRunner.stop();
+            LOG.info("Killing query: {}", topologyName);
+            client.killTopology(topologyName);
+            Thread.sleep(durationSeconds * 1000);
+            LOG.info("Killing query: {}", topologyName);
+    }
+    catch (Exception e) {
+        LOG.error("Error while running the topology", e);
+    }
     }
 
 
