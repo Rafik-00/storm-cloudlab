@@ -80,6 +80,8 @@ public abstract class AbstractTopology {
         this.config.put("nimbus.task.launch.secs", 1200);
         this.config.put("storm.zookeeper.servers", Collections.singletonList(config.getProperty("storm.zookeeper.servers")));
         this.config.put("nimbus.seeds", Collections.singletonList(config.getProperty("nimbus.seeds")));
+        this.config.put("storm.thrift.socket.timeout.ms", 60000);
+        this.config.put("storm.thrift.max_buffer_size", 1048576);
     }
 
     protected abstract void buildTopology();
