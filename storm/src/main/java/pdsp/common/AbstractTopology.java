@@ -69,10 +69,15 @@ public abstract class AbstractTopology {
         this.config = new Config();
         this.config.put("kafka.bootstrap.server", config.getProperty("kafka.bootstrap.server"));
         this.config.put("kafka.port", config.getProperty("kafka.port"));
-        this.config.put("storm.cluster.mode", config.getProperty("storm.cluster.mode"));
-        this.config.put("storm.local.dir", config.getProperty("storm.local.dir"));
-        this.config.put("nimbus.thrift.port", config.getProperty("nimbus.thrift.port"));
-        this.config.put("storm.zookeeper.port", config.getProperty("storm.zookeeper.port"));
+        this.config.put("storm.cluster.mode", "distributed");
+        this.config.put("storm.local.dir", "/tmp/storm");
+        this.config.put("nimbus.thrift.port", 6627);
+        this.config.put("storm.zookeeper.port", 2181);
+        this.config.put("topology.builtin.metrics.bucket.size.secs", 10);
+        this.config.put("drpc.request.timeout.secs", 1600);
+        this.config.put("supervisor.worker.start.timeout.secs", 1200);
+        this.config.put("nimbus.supervisor.timeout.secs", 1200);
+        this.config.put("nimbus.task.launch.secs", 1200);
         this.config.put("storm.zookeeper.servers", Collections.singletonList(config.getProperty("storm.zookeeper.servers")));
         this.config.put("nimbus.seeds", Collections.singletonList(config.getProperty("nimbus.seeds")));
     }
