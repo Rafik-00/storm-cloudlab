@@ -99,6 +99,21 @@ public abstract class AbstractTopology {
     }
 
     public void startTopology(int durationSeconds) {
+        String mode = (String) config.get("storm.cluster.mode");
+        if (mode.equalsIgnoreCase("local")) {
+            startTopologyLocal(durationSeconds);
+        } else if (mode.equalsIgnoreCase("distributed")) {
+            try {
+                startTopologyCluster(durationSeconds);
+            } catch (Exception e) {
+                LOG.error("Error while running the topology", e);
+            }
+        } else {
+            LOG.error("Unsupported mode: {}", mode);
+        }
+    }
+
+    public void startTopologyLocal(int durationSeconds) {
         try {
             buildTopology();
             config.put("topology.queryName", topologyName);
@@ -120,10 +135,11 @@ public abstract class AbstractTopology {
         }
     }
 
-    public void executeSequentialOnRemoteCluster(int durationSeconds) throws Exception {
+    public void startTopologyCluster(int durationSeconds) throws Exception {
         buildTopology();
             config.put("topology.queryName", topologyName);
             config.put("topology.parallelismHint", parallelism);
+            this.config.setNumWorkers(4);
         try {
 
             KafkaRunner kafkaRunner = new KafkaRunner(config);

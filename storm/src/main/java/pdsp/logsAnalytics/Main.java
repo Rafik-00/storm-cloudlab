@@ -20,9 +20,8 @@ public static void main(String[] args) throws Exception {
         // Create and start the topology
         logsAnalyticsTopology topology = new logsAnalyticsTopology(topologyName, mode, filePath, kafkaTopic, config);
         topology.setDebug(true);
-        // topology.startTopology(durationSeconds);
-        // topology.submitTopology(durationSeconds);
-        topology.executeSequentialOnRemoteCluster(durationSeconds);
+        topology.startTopology(durationSeconds);
+
     }
 
 }
