@@ -32,11 +32,11 @@ public class FileSpout extends BaseRichSpout {
     @Override
     public void nextTuple() {
         String line = customFileReader.readNextTuple();
-        if (line != null) {
-            collector.emit(new Values(line, System.currentTimeMillis()));
-        } else {
-            Utils.sleep(100);
+        if (line == null) {
+            customFileReader.resetFile();
+            line = customFileReader.readNextTuple();
         }
+        collector.emit(new Values(line, System.currentTimeMillis()));
     }
 
     @Override
