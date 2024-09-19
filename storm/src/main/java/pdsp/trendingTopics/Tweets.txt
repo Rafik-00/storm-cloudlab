@@ -1,0 +1,9 @@
+0,"2976363","Mon 19th April","NO_QUERY","user1", #parallelism is cool
+0,"2976364","Mon 19th April","NO_QUERY","user2", implementing topologies is #fun
+0,"2976365","Mon 19th April","NO_QUERY","user3",the #weather is good in #Frankfurt
+0,"2976366","Mon 19th April","NO_QUERY","user4",i love the food @restaurantX
+0,"2976367","Mon 19th April","NO_QUERY","user5",good weather is better than bad #weather
+0,"2976368","Mon 19th April","NO_QUERY","user6",i like #parallelism
+0,"2976369","Mon 19th April","NO_QUERY","user7",#Frankfurt
+0,"29763610","Mon 19th April","NO_QUERY","user8",#fun
+0,"29763611","Mon 19th April","NO_QUERY","user8",#fun

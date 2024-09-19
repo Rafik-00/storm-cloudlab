@@ -84,6 +84,23 @@ public abstract class AbstractTopology {
         this.config.put("storm.thrift.max_buffer_size", 1048576);
     }
 
+    // Added constructor to pass config
+    public AbstractTopology(String topologyName, String mode, String filePath, String kafkaTopic, pdsp.config.Config config) {
+        this.topologyName = topologyName;
+        this.mode = mode;
+        this.filePath = filePath;
+        this.kafkaTopic = kafkaTopic;
+        this.windowSize = 2; //TODO: set with Enumerator
+        this.slidingInterval = 1; //TODO: set with Enumerator
+        this.parallelism = parallelismEnumerator.getRandomParallelismHint();
+        this.builder = new TopologyBuilder();
+        this.cluster = new LocalCluster();
+
+        this.config = new Config();
+        this.config.put("kafka.bootstrap.server", config.getProperty("kafka.bootstrap.server"));
+        this.config.put("kafka.port", config.getProperty("kafka.port"));
+    }
+
     protected abstract void buildTopology();
 
     protected BaseRichSpout getSpout() {

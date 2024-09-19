@@ -115,9 +115,7 @@ public class LoggerBolt implements IRichBolt {
 
         logger.info("LoggerBolt-{}: Logging label {} for query {}", taskId, document.toJson(), this.queryName);
         try {
-            String filepath = "./tmp/" + queryName + "-" + parallelismHint + ".json";
-            JsonUtils.saveJsonToFile(document.toJson(), filepath);
-            logger.info("logger saved to {}", filepath);
+            JsonUtils.saveJsonToFile(document.toJson(), "tmp/" + queryName + "-" + parallelismHint + ".json");
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
