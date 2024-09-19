@@ -5,10 +5,10 @@ import pdsp.config.Config;
 
 public class Main {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception{
 
 
-        String configFilePath = "storm/src/main/java/pdsp/config/config.properties";
+        String configFilePath = "src/main/java/pdsp/config/config.properties";
         Config config = new Config(configFilePath);
 
         // Parameters for the topology

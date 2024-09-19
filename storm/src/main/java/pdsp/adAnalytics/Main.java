@@ -4,8 +4,8 @@ package pdsp.adAnalytics;
 import pdsp.config.Config;
 
 public class Main {
-    public static void main(String[] args) {
-        String configFilePath = "storm/src/main/java/pdsp/config/config.properties";
+    public static void main(String[] args) throws Exception{
+        String configFilePath = "src/main/java/pdsp/config/config.properties";
         Config config = new Config(configFilePath);
 
         // Select the topology to run
