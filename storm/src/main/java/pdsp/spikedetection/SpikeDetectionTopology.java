@@ -25,6 +25,9 @@ public class SpikeDetectionTopology extends AbstractTopology{
 
     this.parallelism = (int)Math.round((parserParallelism + averageCalculatorParallelism + spikeDetectorParallelism) /3.0);
 
+    config.registerSerialization(pdsp.spikedetection.AverageValueModel.class);
+    config.registerSerialization(pdsp.spikedetection.SensorMeasurementModel.class);
+
     // Define the topology
     builder.setSpout("source-spout", spout);
     builder.setBolt("parser-bolt", new SensorMeasurementParserBolt(), parserParallelism).shuffleGrouping("source-spout");

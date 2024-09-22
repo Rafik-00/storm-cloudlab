@@ -24,6 +24,10 @@ public class GeoStats {
         this.cityVisits = cityVisits;
     }
 
+    public GeoStats() {
+        this.cityVisits = new HashMap<>();
+    }
+
     public GeoStats(String country) {
         this.country = country;
         this.cityVisits = new HashMap<>();

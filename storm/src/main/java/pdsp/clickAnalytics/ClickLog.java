@@ -30,6 +30,8 @@ public class ClickLog {
 
     private String clientKey;
 
+    ClickLog(){}
+
     ClickLog(String url,  String ip, String clientKey){
         this.url = url;
         this.ip = ip;

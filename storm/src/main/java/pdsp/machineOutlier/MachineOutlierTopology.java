@@ -27,6 +27,9 @@ public class MachineOutlierTopology extends AbstractTopology {
         this.parallelism = (int) Math.round((parserBoltParallelism+outlierBoltParallelism) / 2.0);
         System.out.println("Parallelism in TOPOLOGY: " + this.parallelism);
 
+        config.registerSerialization(pdsp.machineOutlier.MachineUsage.class);
+        config.registerSerialization(pdsp.machineOutlier.BFPRTAlgorithm.class);
+
         builder.setSpout("machine-usage-spout", spout);
         builder.setBolt("machine-usage-parser-bolt", new MachineUsageParserBolt(), parserBoltParallelism).shuffleGrouping("machine-usage-spout");
         builder.setBolt(

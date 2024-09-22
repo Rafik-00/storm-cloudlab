@@ -22,6 +22,9 @@ public class GoogleCloudMonitoringTopology extends AbstractTopology {
 
         this.parallelism = (int) Math.round((taskEventParserBoltParallelism + cpuPerJobBoltParallelism + cpuPerCategoryBoltParallelism) / 3.0);
         System.out.println("Parallelism in TOPOLOGY: " + this.parallelism);
+        config.registerSerialization(pdsp.googleCloudMonitoring.CPUPerCategory.class);
+        config.registerSerialization(pdsp.googleCloudMonitoring.CPUPerJob.class);
+        config.registerSerialization(pdsp.googleCloudMonitoring.TaskEvent.class);
 
         builder.setSpout("gc-monitoring-spout", spout);
         // original Flink implementation takes input to determine type of query (CPU per job or CPU per category)

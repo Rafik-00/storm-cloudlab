@@ -21,7 +21,7 @@ public class AdAnalyticsTopology extends AbstractTopology {
 
         this.parallelism = (int)Math.round((parserParallelism + counterParallelism + rollingCounterParallelism) /3.0);
         System.out.println("Parallelism in TOPOLOGY: " + this.parallelism);
-
+        this.config.registerSerialization(AdEvent.class);
         builder.setSpout("fileSpout", spout);
         builder.setBolt("ad-event-parser", new AdEventParserBolt(), parserParallelism ).shuffleGrouping("fileSpout");
         builder.setBolt("counter", new AdEventCounterBolt(), counterParallelism).fieldsGrouping("ad-event-parser", new Fields("queryId", "adId"));

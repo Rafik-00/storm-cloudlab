@@ -20,6 +20,9 @@ public class TrafficMonitoringTopology extends AbstractTopology {
         this.parallelism = (int) Math.round((parserOperatorParallelism + mapMatcherParallelism + avgSpeedCalculatorParallelism) / 3.0);
         System.out.println("Parallelism in TOPOLOGY: " + this.parallelism);
 
+        config.registerSerialization(pdsp.TrafficMonitoring.Road.class);
+        config.registerSerialization(pdsp.TrafficMonitoring.TrafficEvent.class);
+
         builder.setSpout("fileSpout", spout);
         builder.setBolt("ParserBolt", new ParserBolt(), parserOperatorParallelism).shuffleGrouping("fileSpout");
         builder.setBolt("MapMatcherBolt", new MapMatcherBolt(), mapMatcherParallelism).shuffleGrouping("ParserBolt");

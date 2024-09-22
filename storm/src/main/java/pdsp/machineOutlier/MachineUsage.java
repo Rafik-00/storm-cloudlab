@@ -2,6 +2,9 @@ package pdsp.machineOutlier;
 
 public class MachineUsage {
 
+    MachineUsage() {
+    }
+
     MachineUsage(String machineId,
                  double timestamp,
                  double cpuUtilPercentage,

@@ -29,6 +29,8 @@ public class ClickAnalyticsTopology extends AbstractTopology {
         this.parallelism = (int) Math.round((parserOperatorParallelism + repeatVisitOperatorParallelism + sumReducerParallelism + geographyOperatorParallelism) / 4.0);
         System.out.println("Parallelism in TOPOLOGY: " + this.parallelism);
 
+        config.registerSerialization(pdsp.clickAnalytics.ClickLog.class);
+        config.registerSerialization(pdsp.clickAnalytics.GeoStats.class);
         builder.setSpout("click-log-spout", spout, parallelism);
         builder.setBolt("parse-click-log-bolt",new ClickLogParserBolt(), parserOperatorParallelism).shuffleGrouping("click-log-spout");
 

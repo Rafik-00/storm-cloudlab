@@ -23,7 +23,8 @@ public class BargainIndexTopology extends AbstractTopology {
         int parserParallelism = this.parallelismEnumerator.getRandomParallelismHint();
         int vwapCalculatorParallelism = this.parallelismEnumerator.getRandomParallelismHint();
         int bargainIndexParallelism = this.parallelismEnumerator.getRandomParallelismHint();
-        
+        config.registerSerialization(pdsp.bargainIndex.QuoteDataModel.class);
+        parallelism = (int) Math.round((parserParallelism + vwapCalculatorParallelism + bargainIndexParallelism) / 3.0);
         // Define the topology
         builder.setSpout("source-spout", spout);
         builder.setBolt("parser-bolt", new QuoteDataParserBolt(), parserParallelism).shuffleGrouping("source-spout");

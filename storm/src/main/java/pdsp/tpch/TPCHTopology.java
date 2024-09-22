@@ -23,6 +23,8 @@ public class TPCHTopology extends AbstractTopology {
         int sumParallelism = this.parallelismEnumerator.getRandomParallelismHint();
         int formatterOutputParallelism = this.parallelismEnumerator.getRandomParallelismHint();
 
+        parallelism = (int) Math.round((parserParallelism + filterCalculatorParallelism + priorityMapperParallelism + sumParallelism + formatterOutputParallelism) / 5.0);
+        config.registerSerialization(pdsp.tpch.TPCHEventModel.class);
 
         // Define the topology
         builder.setSpout("fileSpout", spout);

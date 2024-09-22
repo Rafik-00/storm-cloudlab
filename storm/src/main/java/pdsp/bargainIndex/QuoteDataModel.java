@@ -7,6 +7,9 @@ public class QuoteDataModel implements Serializable{
         private double high;
         private double low;
 
+        public QuoteDataModel() {
+        }
+
         public QuoteDataModel(String symbol, String date, double open, double high, double low, double close, double adjClose, long volume) {
             this.symbol = symbol;
             this.date = date;
