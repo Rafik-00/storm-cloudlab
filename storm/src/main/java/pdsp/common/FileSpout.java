@@ -18,6 +18,7 @@ import java.util.Map;
 public class FileSpout extends BaseRichSpout {
     private SpoutOutputCollector collector;
     private final CustomFileReader customFileReader;
+    int cnt = 0;
 
     public FileSpout(String inputPath) {
         this.customFileReader = new CustomFileReader(inputPath);
@@ -33,6 +34,9 @@ public class FileSpout extends BaseRichSpout {
     public void nextTuple() {
         String line = customFileReader.readNextTuple();
         if (line == null) {
+            if(cnt >= 20000)
+                return;
+            cnt++;
             customFileReader.resetFile();
             line = customFileReader.readNextTuple();
         }

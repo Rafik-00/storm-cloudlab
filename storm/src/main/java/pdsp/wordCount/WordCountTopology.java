@@ -1,6 +1,7 @@
 package pdsp.wordCount;
 
 import org.apache.storm.topology.base.BaseRichSpout;
+import org.apache.storm.tuple.Fields;
 import pdsp.common.AbstractTopology;
 import pdsp.common.LoggerBolt;
 import pdsp.config.Config;
@@ -23,7 +24,7 @@ public class WordCountTopology extends AbstractTopology {
         // Define the topology
         builder.setSpout("fileSpout", spout);
         builder.setBolt("splitter", new splitter(),splitterParallelism).shuffleGrouping("fileSpout");
-        builder.setBolt("wordCountBolt", new WordCountBolt(),wordCountBoltParallelism).shuffleGrouping("splitter");
+        builder.setBolt("wordCountBolt", new WordCountBolt(),wordCountBoltParallelism).fieldsGrouping("splitter", new Fields("word"));
         builder.setBolt("loggerBolt", new LoggerBolt(), 1).shuffleGrouping("wordCountBolt");
 
 

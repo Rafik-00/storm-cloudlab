@@ -19,7 +19,7 @@ public class Main {
 
         // Create and start the topology
         WordCountTopology topology = new WordCountTopology(topologyName, mode, filePath, kafkaTopic, config);
-        topology.setDebug(true);
+        topology.setDebug(false);
         topology.startTopology(durationSeconds);
 
 

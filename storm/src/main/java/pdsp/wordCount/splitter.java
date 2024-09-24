@@ -21,7 +21,7 @@ public class splitter extends BaseBasicBolt {
 
     @Override
     public void declareOutputFields(OutputFieldsDeclarer outputFieldsDeclarer) {
-        outputFieldsDeclarer.declare(new Fields("sentence", "e2eTimestamp", "processingTimestamp"));
+        outputFieldsDeclarer.declare(new Fields("word", "e2eTimestamp", "processingTimestamp"));
     }
 
     @Override
@@ -38,14 +38,14 @@ public class splitter extends BaseBasicBolt {
             sentence = (String) arr[0];
             e2eTimestamp = arr[1] != null ? (long) arr[1] : processingTimestamp;
         }
-        System.out.println("Sentence received: " + sentence);
         String[] words = sentence.split(" ");
-        List<String> wordList = new ArrayList<>();
+//        List<String> wordList = new ArrayList<>();
         for (String word : words) {
-            wordList.add(word);
-            System.out.println("Word emitted: " + word);
+//            wordList.add(word);
+            basicOutputCollector.emit(new Values(word, e2eTimestamp, processingTimestamp));
+
         }
 
-        basicOutputCollector.emit(new Values(wordList, e2eTimestamp, processingTimestamp));
+//        basicOutputCollector.emit(new Values(wordList, e2eTimestamp, processingTimestamp));
     }
 }

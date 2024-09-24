@@ -11,7 +11,7 @@ public class Main {
         Config config = new Config(configFilePath);
 
         // Parameters for the topology
-        String topologyName = "smartGridMonitoring"; // Select the SmartGridMonitoring topology
+            String topologyName = "smartGridMonitoring"; // Select the SmartGridMonitoring topology
         int durationSeconds = config.getIntProperty("durationSeconds");
 
         // Load specific topology configurations
